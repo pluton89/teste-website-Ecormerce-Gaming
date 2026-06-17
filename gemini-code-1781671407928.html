@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS GEAR | Équipement Gaming Ultra-Performance</title>
+    <style>
+        /* --- DESIGN SYSTEM : CYBERPUNK / HARDWARE LUXE --- */
+        :root {
+            --bg-dark: #020204;        /* Noir absolu */
+            --bg-card: #0c0d14;        /* Anthracite sombre */
+            --bg-input: #141622;       /* Fond des zones de saisie */
+            --text-light: #ffffff;     /* Blanc brillant */
+            --text-muted: #888ba0;     /* Gris tech */
+            --neon-cyan: #00f5d4;      /* Cyan Électrique */
+            --neon-purple: #9d4edd;    /* Violet Néon */
+            --cyan-glow: rgba(0, 245, 212, 0.35);
+            --purple-glow: rgba(157, 78, 221, 0.35);
+            --border: rgba(255, 255, 255, 0.05);
+            --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        /* --- LOGIQUE DE PAGE SYSTEM & TEXTURES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', -apple-system, sans-serif; }
+        body { background-color: var(--bg-dark); color: var(--text-light); min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden; }
+        
+        /* Grille technique en arrière-plan */
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 20, 32, 0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(18, 20, 32, 0.15) 1px, transparent 1px);
+            background-size: 20px 20px; z-index: -1; pointer-events: none;
+        }
+
+        /* Gestion de l'affichage SPA */
+        .page-section { display: none; opacity: 0; transform: translateY(10px); transition: var(--transition); }
+        .page-section.active { display: block; opacity: 1; transform: translateY(0); }
+
+        /* --- BARRE DE NAVIGATION FIXE --- */
+        header { background: rgba(12, 13, 20, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        nav { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center; width: 92%; max-width: 1400px; margin: 0 auto; padding: 15px 0; }
+        
+        .logo { font-size: 24px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; user-select: none; text-shadow: 0 0 10px var(--cyan-glow); }
+        .logo span { color: var(--neon-cyan); }
+
+        .search-wrapper { position: relative; width: 90%; max-width: 550px; margin: 0 auto; }
+        .search-wrapper input { width: 100%; padding: 12px 20px; border: 1px solid var(--border); background: var(--bg-input); border-radius: 4px; color: #fff; font-size: 14px; transition: var(--transition); }
+        .search-wrapper input:focus { outline: none; border-color: var(--neon-purple); box-shadow: 0 0 15px var(--purple-glow); }
+
+        .nav-tabs { display: flex; justify-content: flex-end; align-items: center; gap: 25px; list-style: none; }
+        .nav-tabs a { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; transition: var(--transition); color: var(--text-muted); }
+        .nav-tabs a:hover, .nav-tabs a.active { color: var(--text-light); text-shadow: 0 0 8px var(--purple-glow); }
+
+        .cart-trigger { position: relative; cursor: pointer; font-size: 20px; display: flex; align-items: center; transition: var(--transition); }
+        .cart-trigger:hover { transform: scale(1.05); }
+        .cart-counter { position: absolute; top: -8px; right: -12px; background: var(--neon-cyan); color: #000; font-size: 11px; font-weight: 900; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; box-shadow: 0 0 10px var(--neon-cyan); }
+
+        /* --- SYSTEM BOUTONS PRESETS --- */
+        .btn { position: relative; background: var(--neon-purple); color: white; padding: 14px 35px; text-transform: uppercase; font-size: 12px; font-weight: 800; letter-spacing: 2px; border: none; cursor: pointer; transition: var(--transition); border-radius: 4px; box-shadow: 0 0 15px var(--purple-glow); overflow: hidden; }
+        .btn:hover { background: #ae66e3; box-shadow: 0 0 25px var(--neon-purple); transform: translateY(-2px); }
+        
+        .btn-cyan { background: transparent; border: 1px solid var(--neon-cyan); color: var(--neon-cyan); box-shadow: 0 0 15px var(--cyan-glow); }
+        .btn-cyan:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 25px var(--neon-cyan); }
+
+        /* --- ONGLET 1 : ACCUEIL VIRTUAL STATION --- */
+        .hero-banner { min-height: 75vh; background: linear-gradient(rgba(2, 2, 4, 0.5), var(--bg-dark)), url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1600') no-repeat center/cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .hero-banner h1 { font-size: 56px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 10px; line-height: 1.1; }
+        .hero-banner h1 span { color: var(--neon-purple); text-shadow: 0 0 20px var(--purple-glow); }
+        .hero-banner p { font-size: 16px; color: var(--text-muted); margin-bottom: 35px; letter-spacing: 2px; text-transform: uppercase; max-width: 800px; }
+
+        /* --- ONGLET 2 : BOUTIQUE / GRILLE HARDWARE --- */
+        .shop-wrapper { width: 92%; max-width: 1400px; margin: 50px auto; }
+        .section-headline { font-size: 28px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 40px; border-left: 4px solid var(--neon-cyan); padding-left: 15px; }
+        .hardware-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; }
+        
+        .item-card { background: var(--bg-card); border-radius: 4px; padding: 20px; border: 1px solid var(--border); display: flex; flex-direction: column; justify-content: space-between; transition: var(--transition); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .item-card:hover { border-color: var(--neon-cyan); box-shadow: 0 0 20px rgba(0, 245, 212, 0.15); transform: translateY(-4px); }
+        .item-card img { width: 100%; height: 260px; object-fit: cover; border-radius: 2px; margin-bottom: 15px; }
+        .item-tag { font-size: 11px; text-transform: uppercase; color: var(--neon-cyan); font-weight: 800; letter-spacing: 1px; margin-bottom: 5px; }
+        .item-title { font-size: 18px; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
+        .item-price { font-size: 22px; font-weight: 900; color: #fff; margin-bottom: 18px; }
+
+        /* --- MODULE : INVENTAIRE LATÉRAL (PANIER) --- */
+        .cart-panel { position: fixed; top: 0; right: -460px; width: 460px; height: 100%; background: var(--bg-card); border-left: 1px solid var(--border); box-shadow: -10px 0 40px rgba(0,0,0,0.8); z-index: 1000; transition: var(--transition); display: flex; flex-direction: column; padding: 30px; }
+        .cart-panel.open { right: 0; }
+        .cart-panel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; }
+        .cart-panel-header h2 { font-weight: 900; text-transform: uppercase; letter-spacing: 1px; font-size: 20px; }
+        .panel-close { font-size: 28px; cursor: pointer; color: var(--text-muted); transition: var(--transition); }
+        .panel-close:hover { color: var(--neon-cyan); }
+        
+        .cart-items-container { flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .cart-node { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid rgba(255,255,255,0.02); padding-bottom: 15px; }
+        .cart-node img { width: 70px; height: 70px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border); }
+        .cart-node-info { flex-grow: 1; }
+        .cart-node-title { font-size: 14px; font-weight: 700; }
+        .cart-node-price { font-size: 14px; color: var(--neon-cyan); font-weight: 700; margin-top: 3px; }
+        .cart-node-qty { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .qty-mod { background: var(--bg-input); border: 1px solid var(--border); width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; border-radius: 4px; }
+        .qty-mod:hover { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .drop-node { font-size: 11px; color: #ff4757; cursor: pointer; margin-left: auto; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
+
+        .cart-panel-footer { border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px; }
+        .total-billing-row { display: flex; justify-content: space-between; font-size: 18px; font-weight: 900; margin-bottom: 20px; text-transform: uppercase; }
+
+        /* --- ONGLET 3 : INTERFACE COMPTE / JOUEUR --- */
+        .terminal-account { width: 90%; max-width: 460px; margin: 80px auto; background: var(--bg-card); padding: 40px; box-shadow: var(--shadow); border-radius: 4px; border: 1px solid var(--border); }
+        .toggle-auth { display: flex; justify-content: space-around; margin-bottom: 30px; border-bottom: 1px solid var(--border); padding-bottom: 12px; }
+        .toggle-auth span { cursor: pointer; color: var(--text-muted); transition: var(--transition); text-transform: uppercase; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+        .toggle-auth span.active { color: var(--text-light); border-bottom: 2px solid var(--neon-purple); padding-bottom: 12px; }
+        
+        .form-block { display: none; flex-direction: column; gap: 20px; }
+        .form-block.active { display: flex; }
+        .form-node { display: flex; flex-direction: column; gap: 6px; }
+        .form-node label { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); }
+        .form-node input { padding: 12px 15px; background: var(--bg-input); border: 1px solid var(--border); color: #fff; font-size: 14px; border-radius: 4px; transition: var(--transition); }
+        .form-node input:focus { outline: none; border-color: var(--neon-cyan); }
+
+        /* --- POP-UP MODAL MULTI-FLOWS (CHECKOUT & FACTURE) --- */
+        .modal-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); display: flex; justify-content: center; align-items: center; z-index: 1100; opacity: 0; pointer-events: none; transition: var(--transition); backdrop-filter: blur(6px); }
+        .modal-screen.open { opacity: 1; pointer-events: auto; }
+        
+        .modal-mainframe { background: var(--bg-card); padding: 40px; width: 90%; max-width: 560px; border-radius: 4px; border: 1px solid var(--border); position: relative; }
+        
+        .gateway-selector { display: flex; gap: 15px; margin: 20px 0; }
+        .gateway-tab { flex: 1; padding: 12px; text-align: center; border: 1px solid var(--border); cursor: pointer; font-weight: 700; text-transform: uppercase; font-size: 11px; border-radius: 4px; }
+        .gateway-tab.active { border-color: var(--neon-cyan); color: var(--neon-cyan); background: var(--bg-input); box-shadow: 0 0 10px var(--cyan-glow); }
+        
+        .gateway-flow-box { display: none; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .gateway-flow-box.active { display: flex; }
+        .paypal-trigger { background: #ffc439; color: #111; padding: 15px; text-align: center; font-weight: 800; border-radius: 4px; cursor: pointer; text-transform: uppercase; font-size: 12px; }
+
+        .receipt-mainframe { text-align: center; display: none; }
+        .receipt-mainframe.active { display: block; }
+        .receipt-terminal-logs { background: var(--bg-input); padding: 20px; border-radius: 4px; border-left: 3px solid var(--neon-cyan); text-align: left; margin: 20px 0; font-size: 13px; font-family: 'Courier New', monospace; color: #b4b7cd; line-height: 1.4; }
+
+        /* --- FOOTER GRID --- */
+        footer { text-align: center; padding: 40px 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; margin-top: auto; letter-spacing: 1px; text-transform: uppercase; background: #06070a; }
+
+        /* --- RESPONSIVE OPTIMIZATION --- */
+        @media (max-width: 768px) {
+            nav { grid-template-columns: 1fr 1fr; gap: 15px; }
+            .search-wrapper { grid-row: 2; grid-column: 1 / span 2; width: 100%; }
+            .cart-panel { width: 100%; right: -100%; padding: 20px; }
+            .hero-banner h1 { font-size: 32px; }
+            .hardware-grid { gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- RETINA TOP NAVIGATION BAR -->
+    <header>
+        <nav>
+            <div class="logo" onclick="switchSection('accueil')">NEXUS <span>GEAR</span></div>
+            <div class="search-wrapper">
+                <input type="text" id="catalogSearch" placeholder="Rechercher clavier, souris, écran, bureau..." oninput="triggerLiveSearch()">
+            </div>
+            <ul class="nav-tabs">
+                <li><a onclick="switchSection('accueil')" id="nav-accueil" class="active">Accueil</a></li>
+                <li><a onclick="switchSection('boutique')" id="nav-boutique">Boutique</a></li>
+                <li><a onclick="switchSection('compte')" id="nav-compte">Mon Compte</a></li>
+                <li class="cart-trigger" onclick="toggleCartPanel(true)">
+                    🛒 <span class="cart-counter" id="cartGlobalCounter">0</span>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- SECTION 1 : DASHBOARD ACCUEIL -->
+    <div id="accueil" class="page-section active">
+        <main class="hero-banner">
+            <h1>Upgrade Ton <span>Setup Gaming</span></h1>
+            <p>Périphériques haute fréquence, mobilier ergonomique et solutions d'éclairage immersif.</p>
+            <button onclick="switchSection('boutique')" class="btn">Accéder à la Boutique</button>
+        </main>
+    </div>
+
+    <!-- SECTION 2 : BOUTIQUE COMPLET -->
+    <div id="boutique" class="page-section">
+        <main class="shop-wrapper">
+            <h2 class="section-headline">Équipements Disponibles</h2>
+            <div class="hardware-grid" id="hardwareGrid">
+                <!-- Construit dynamiquement par JavaScript -->
+            </div>
+        </main>
+    </div>
+
+    <!-- SECTION 3 : INTERFACE DE PROFIL / JOUEUR -->
+    <div id="compte" class="page-section">
+        <main class="terminal-account" id="terminalAccountSection">
+            <!-- Formulaires d'authentification ou Hub Profil gérés via JS -->
+        </main>
+    </div>
+
+    <!-- MODULE ESCALADE : PANIER FLOTTANT -->
+    <div class="cart-panel" id="cartPanel">
+        <div class="cart-panel-header">
+            <h2>Inventaire Sélection</h2>
+            <span class="panel-close" onclick="toggleCartPanel(false)">&times;</span>
+        </div>
+        <div class="cart-items-container" id="cartItemsContainer">
+            <!-- Liste d'articles JavaScript -->
+        </div>
+        <div class="cart-panel-footer">
+            <div class="total-billing-row">
+                <span>Total Matériel :</span>
+                <span id="cartDisplayTotal" style="color:var(--neon-cyan)">0.00 €</span>
+            </div>
+            <button class="btn" style="width:100%" onclick="openCheckoutModal()">Valider la commande</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTROL INTERFACE : MODAL CHECKOUT & FAUSSE FACTURE -->
+    <div class="modal-screen" id="checkoutModalScreen">
+        <!-- LAYOUT 1 : FORMULAIRE DE RÈGLEMENT -->
+        <div class="modal-mainframe" id="checkoutFormFrame">
+            <span class="panel-close" style="position:absolute; top:15px; right:20px" onclick="closeCheckoutModal()">&times;</span>
+            <h2 style="font-weight:900; text-transform:uppercase; font-size:20px; letter-spacing:1px; margin-bottom:5px;">Sécurisation des Flux</h2>
+            <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Sélectionnez votre protocole d'échange de crédits.</p>
+            
+            <div class="gateway-selector">
+                <div class="gateway-tab active" id="tabCreditCard" onclick="togglePaymentGateway('CB')">Carte Bancaire</div>
+                <div class="gateway-tab" id="tabPaypal" onclick="togglePaymentGateway('PP')">PayPal Hub</div>
+            </div>
+
+            <!-- Flow CB -->
+            <div class="gateway-flow-box active" id="flowCreditCard">
+                <div class="form-node">
+                    <label>Titulaire du compte</label>
+                    <input type="text" id="billingCardName" placeholder="EX: SHROUD PRO">
+                </div>
+                <div class="form-node">
+                    <label>Numéro de carte de crédit</label>
+                    <input type="text" maxlength="19" placeholder="4000 1234 5678 9010">
+                </div>
+                <div style="display:flex; gap:15px">
+                    <div class="form-node" style="flex:1">
+                        <label>Expiration</label>
+                        <input type="text" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-node" style="flex:1">
+                        <label>Cryptogramme (CVC)</label>
+                        <input type="password" placeholder="***" maxlength="3">
+                    </div>
+                </div>
+                <button class="btn" style="width:100%; margin-top:15px;" onclick="executeOrderPayment()">Confirmer le transfert</button>
+            </div>
+
+            <!-- Flow PayPal -->
+            <div class="gateway-flow-box" id="flowPaypal">
+                <p style="color:var(--text-muted); font-size:13px; margin-bottom:15px;">Une fenêtre d'autorisation chiffrée va être synchronisée avec votre compte PayPal.</p>
+                <div class="paypal-trigger" onclick="executeOrderPayment()">Payer via l'API PayPal</div>
+            </div>
+        </div>
+
+        <!-- LAYOUT 2 : SUCCÈS & RENDER LOG FACTURE CONSOLE -->
+        <div class="modal-mainframe receipt-mainframe" id="checkoutReceiptFrame">
+            <div style="font-size:50px; color:var(--neon-cyan); margin-bottom:10px;">✓</div>
+            <h3 style="font-weight:900; text-transform:uppercase; font-size:22px; letter-spacing:1px;">Synchronisation Réussie</h3>
+            <p style="color:var(--text-muted); font-size:13px;">Votre commande matérielle a été validée par la passerelle de routage.</p>
+            <div class="receipt-terminal-logs" id="receiptTerminalLogs">
+                <!-- Log injecté par script -->
+            </div>
+            <button class="btn btn-cyan" onclick="closeCheckoutModal(true)">Retour au Terminal Principal</button>
+        </div>
+    </div>
+
+    <!-- TERMINAL FOOTER -->
+    <footer>
+        <p>&copy; 2026 NEXUS GEAR &bull; Premium Hardware System Logistics. Tous droits réservés.</p>
+    </footer>
+
+    <!-- INTERACTION CONTROLLER JAVASCRIPT -->
+    <script>
+        /* --- CATALOGUE MATRICE DE PRODUITS HARDWARE --- */
+        const PRODUCTS = [
+            { id: 1, name: "Clavier Mécanique Méca-Optique RGB", price: 149.99, cat: "Clavier", img: "https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?q=80&w=500" },
+            { id: 2, name: "Souris Gaming Pro 26K DPI Sans Fil", price: 89.99, cat: "Souris", img: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?q=80&w=500" },
+            { id: 3, name: "Tapis de Souris XXL Étendu Anti-Dérapant", price: 34.99, cat: "Tapis", img: "https://images.unsplash.com/photo-1632292224971-0d45778bd364?q=80&w=500" },
+            { id: 4, name: "Écran PC 27 Incurvé 240Hz 0.5ms", price: 329.00, cat: "Écran", img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=500" },
+            { id: 5, name: "Bureau Gaming Carbon Élite Ergonomique", price: 249.50, cat: "Bureau", img: "https://images.unsplash.com/photo-1593305841991-05c297ba4575?q=80&w=500" },
+            { id: 6, name: "Barre Lumineuse Écran Smart RGB LED", price: 42.00, cat: "Lampe", img: "https://images.unsplash.com/photo-1563089145-599997674d42?q=80&w=500" },
+            { id: 7, name: "Support de Casque Gamer avec Hub USB 3.0", price: 29.99, cat: "Accessoires", img: "https://images.unsplash.com/photo-1609081219090-a6d81d3085bf?q=80&w=500" }
+        ];
+
+        /* --- ÉTATS STRUCTURÉ DE L'APPLICATION (LOCALSTORAGE) --- */
+        let cart = JSON.parse(localStorage.getItem('nexus_g_cart')) || [];
+        let registeredUsers = JSON.parse(localStorage.getItem('nexus_g_users')) || [];
+        let loggedUser = JSON.parse(localStorage.getItem('nexus_g_logged')) || null;
+        let selectedGateway = 'CB';
+
+        /* --- INITIALISATION DE L'ÉCOSYSTÈME --- */
+        document.addEventListener("DOMContentLoaded", () => {
+            renderHardwareCatalog(PRODUCTS);
+            synchronizeCartUI();
+            buildAccountInterface();
+        });
+
+        /* --- ROUTAGE ONGLETS SINGLE PAGE APPLICATION --- */
+        function switchSection(targetId) {
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.nav-tabs a').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(targetId).classList.add('active');
+            const navLink = document.getElementById('nav-' + targetId);
+            if(navLink) navLink.classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* --- RENDERER DU CATALOGUE & COMPOSANT DE RECHERCHE LIVE --- */
+        function renderHardwareCatalog(list) {
+            const grid = document.getElementById('hardwareGrid');
+            if (list.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:var(--text-muted); padding:60px 0; font-family:monospace;">[ ALERTE ] Aucun composant ne répond aux mots-clés saisis.</p>`;
+                return;
+            }
+            grid.innerHTML = list.map(item => `
+                <div class="item-card">
+                    <div>
+                        <img src="${item.img}" alt="${item.name}">
+                        <div class="item-tag">// ${item.cat}</div>
+                        <div class="item-title">${item.name}</div>
+                    </div>
+                    <div>
+                        <div class="item-price">${item.price.toFixed(2)} €</div>
+                        <button class="btn btn-cyan" style="width:100%; padding:10px;" onclick="addHardwareToCart(${item.id})">Ajouter à l'inventaire</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function triggerLiveSearch() {
+            switchSection('boutique');
+            const searchKey = document.getElementById('catalogSearch').value.toLowerCase().trim();
+            const matchedItems = PRODUCTS.filter(p => p.name.toLowerCase().includes(searchKey) || p.cat.toLowerCase().includes(searchKey));
+            renderHardwareCatalog(matchedItems);
+        }
+
+        /* --- MANIPULATION DE L'INVENTAIRE / PANIER --- */
+        function toggleCartPanel(open) {
+            document.getElementById('cartPanel').classList.toggle('open', open);
+        }
+
+        function addHardwareToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            const entry = cart.find(item => item.id === productId);
+            if(entry) {
+                entry.qty++;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            commitCartChanges();
+            toggleCartPanel(true);
+        }
+
+        function adjustQty(productId, adjustment) {
+            const entry = cart.find(item => item.id === productId);
+            if(entry) {
+                entry.qty += adjustment;
+                if(entry.qty <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+                commitCartChanges();
+            }
+        }
+
+        function purgeCartNode(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            commitCartChanges();
+        }
+
+        function commitCartChanges() {
+            localStorage.setItem('nexus_g_cart', JSON.stringify(cart));
+            synchronizeCartUI();
+        }
+
+        function synchronizeCartUI() {
+            const counterBadge = document.getElementById('cartGlobalCounter');
+            const listWrapper = document.getElementById('cartItemsContainer');
+            const billingTotal = document.getElementById('cartDisplayTotal');
+
+            const cumulativeQty = cart.reduce((acc, current) => acc + current.qty, 0);
+            counterBadge.innerText = cumulativeQty;
+
+            if (cart.length === 0) {
+                listWrapper.innerHTML = `<p style="text-align:center; color:var(--text-muted); margin-top:50px; font-family:monospace;">[ INVENTAIRE VIDE ]</p>`;
+                billingTotal.innerText = "0.00 €";
+                return;
+            }
+
+            listWrapper.innerHTML = cart.map(node => `
+                <div class="cart-node">
+                    <img src="${node.img}" alt="${node.name}">
+                    <div class="cart-node-info">
+                        <div class="cart-node-title">${node.name}</div>
+                        <div class="cart-node-qty">
+                            <span class="qty-mod" onclick="adjustQty(${node.id}, -1)">-</span>
+                            <span style="font-weight:900;">${node.qty}</span>
+                            <span class="qty-mod" onclick="adjustQty(${node.id}, 1)">+</span>
+                        </div>
+                        <div class="cart-node-price">${(node.price * node.qty).toFixed(2)} €</div>
+                    </div>
+                    <span class="drop-node" onclick="purgeCartNode(${node.id})">[ Drop ]</span>
+                </div>
+            `).join('');
+
+            const sum = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            billingTotal.innerText = `${sum.toFixed(2)} €`;
+        }
+
+        /* --- COMPOSANT COMPTE & AUTHENTIFICATION --- */
+        function buildAccountInterface(viewMode = 'login') {
+            const container = document.getElementById('terminalAccountSection');
+            if (loggedUser) {
+                container.innerHTML = `
+                    <div style="text-align:center;">
+                        <h3 style="font-weight:900; margin-bottom:5px; text-transform:uppercase;">JOUEUR : ${loggedUser.name}</h3>
+                        <p style="color:var(--neon-cyan); font-family:monospace; font-size:12px; margin-bottom:25px;">[ SESSION VERIFIED / SYNC PROTOCOL ACTIVE ]</p>
+                        <button class="btn btn-cyan" style="width:100%" onclick="closeSession()">Déconnexion du profil</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="toggle-auth">
+                    <span class="${viewMode === 'login' ? 'active' : ''}" onclick="buildAccountInterface('login')">Connexion</span>
+                    <span class="${viewMode === 'register' ? 'active' : ''}" onclick="buildAccountInterface('register')">S'enregistrer</span>
+                </div>
+                
+                <form class="form-block ${viewMode === 'login' ? 'active' : ''}" onsubmit="processLogin(event)">
+                    <div class="form-node">
+                        <label>Adresse mail d'accès</label>
+                        <input type="email" id="authEmail" required placeholder="player@nexus.com">
+                    </div>
+                    <div class="form-node">
+                        <label>Clé d'authentification</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••">
+                    </div>
+                    <button type="submit" class="btn" style="margin-top:10px;">Lancer la connexion</button>
+                </form>
+
+                <form class="form-block ${viewMode === 'register' ? 'active' : ''}" onsubmit="processRegistration(event)">
+                    <div class="form-node">
+                        <label>Pseudo de Joueur</label>
+                        <input type="text" id="regUserNick" required placeholder="Shroud_Pro">
+                    </div>
+                    <div class="form-node">
+                        <label>E-mail réseau</label>
+                        <input type="email" id="regUserEmail" required placeholder="gear@nexus.com">
+                    </div>
+                    <div class="form-node">
+                        <label>Mot de passe</label>
+                        <input type="password" id="regUserPassword" required placeholder="6 caractères min.">
+                    </div>
+                    <button type="submit" class="btn" style="margin-top:10px;">Générer l'ID profil</button>
+                </form>
+            `;
+        }
+
+        function processRegistration(e) {
+            e.preventDefault();
+            const name = document.getElementById('regUserNick').value.trim();
+            const email = document.getElementById('regUserEmail').value.trim();
+            const password = document.getElementById('regUserPassword').value;
+
+            if(registeredUsers.find(user => user.email === email)) {
+                alert("Erreur : Cette adresse mail est déjà liée à un profil joueur.");
+                return;
+            }
+
+            const profile = { name, email, password };
+            registeredUsers.push(profile);
+            localStorage.setItem('nexus_g_users', JSON.stringify(registeredUsers));
+            loggedUser = profile;
+            localStorage.setItem('nexus_g_logged', JSON.stringify(loggedUser));
+            buildAccountInterface();
+        }
+
+        function processLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value;
+
+            const target = registeredUsers.find(u => u.email === email && u.password === password);
+            if(!target) {
+                alert("Routage refusé : Identifiants non répertoriés.");
+                return;
+            }
+
+            loggedUser = target;
+            localStorage.setItem('nexus_g_logged', JSON.stringify(loggedUser));
+            buildAccountInterface();
+        }
+
+        function closeSession() {
+            loggedUser = null;
+            localStorage.removeItem('nexus_g_logged');
+            buildAccountInterface();
+        }
+
+        /* --- MODULE FINANCIER SECURE (CHECKOUT MODAL & GENERATE LOG) --- */
+        function openCheckoutModal() {
+            if(cart.length === 0) {
+                alert("L'inventaire de commande ne contient aucun article.");
+                return;
+            }
+            toggleCartPanel(false);
+            document.getElementById('checkoutModalScreen').classList.add('open');
+            document.getElementById('checkoutFormFrame').style.display = "block";
+            document.getElementById('checkoutReceiptFrame').classList.remove('active');
+
+            if(loggedUser && document.getElementById('billingCardName')) {
+                document.getElementById('billingCardName').value = loggedUser.name.toUpperCase();
+            }
+        }
+
+        function closeCheckoutModal(flushCart = false) {
+            document.getElementById('checkoutModalScreen').classList.remove('open');
+            if(flushCart) {
+                cart = [];
+                commitCartChanges();
+                switchSection('accueil');
+            }
+        }
+
+        function togglePaymentGateway(mode) {
+            selectedGateway = mode;
+            document.getElementById('tabCreditCard').classList.toggle('active', mode === 'CB');
+            document.getElementById('tabPaypal').classList.toggle('active', mode === 'PP');
+            document.getElementById('flowCreditCard').classList.toggle('active', mode === 'CB');
+            document.getElementById('flowPaypal').classList.toggle('active', mode === 'PP');
+        }
+
+        function executeOrderPayment() {
+            document.getElementById('checkoutFormFrame').style.display = "none";
+            document.getElementById('checkoutReceiptFrame').classList.add('active');
+
+            const netTotal = cart.reduce((acc, item) => acc + (item.price * item.qty), 0);
+            const tokenHex = Math.floor(10000000 + Math.random() * 90000000).toString(16).toUpperCase();
+            const clientStamp = loggedUser ? loggedUser.name.toUpperCase() : "GUEST_USER";
+
+            let billNodes = cart.map(node => `+ [QTY: ${node.qty}] ${node.name} -> ${(node.price * node.qty).toFixed(2)}€`).join('<br>');
+
+            document.getElementById('receiptTerminalLogs').innerHTML = `
+                ================================================<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NEXUS GATEWAY LOG TRANSACTION<br>
+                ================================================<br>
+                [HASH-ID] &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull; #NX-${tokenHex}<br>
+                [TIMESTAMP] &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull; ${new Date().toLocaleDateString('fr-FR')}<br>
+                [OPERATOR] &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull; ${clientStamp}<br>
+                [PROTOCOL] &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull; ${selectedGateway === 'CB' ? 'SECURE_CC_VISA' : 'PAYPAL_API_ROUTING'}<br>
+                ------------------------------------------------<br>
+                DEPLOYING HARDWARE LIST :<br>
+                ${billNodes}<br>
+                ------------------------------------------------<br>
+                [NET_CREDITS_TRANSFERRED] &bull;&bull;&bull;&bull;&bull;&bull; ${netTotal.toFixed(2)} €<br>
+                STATUS : [ CODES 200 - INVENTAIRE MISE A JOUR ]<br>
+                ================================================
+            `;
+        }
+    </script>
+</body>
+</html>
